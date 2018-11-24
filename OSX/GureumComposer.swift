@@ -261,7 +261,11 @@ let GureumInputSourceToHangulKeyboardIdentifierTable: [GureumInputSourceIdentifi
 
         if self.delegate === hangulComposer {
             // Vi-mode: esc로 로마자 키보드로 전환
-            if GureumConfiguration.shared.romanModeByEscapeKey && keyCode == kVK_Escape {
+            //Bool b;
+            let ControlUnpressed = inputModifier.intersection(NSEvent.ModifierFlags.control).isEmpty;
+            let ShiftUnpressed = inputModifier.intersection(NSEvent.ModifierFlags.shift).isEmpty;
+            let EscapePressed = (keyCode == kVK_Escape);
+            if (GureumConfiguration.shared.romanModeByEscapeKey && (EscapePressed || (keyCode == kVK_ANSI_LeftBracket && ShiftUnpressed && !ControlUnpressed))) {
                 self.delegate.cancelComposition()
                 (sender as AnyObject).selectMode(GureumConfiguration.shared.lastRomanInputMode)
                 return CIMInputTextProcessResult.notProcessedAndNeedsCommit
